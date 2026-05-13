@@ -1,0 +1,99 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== CSS variables theme ===== */
+:root{
+  --bg: #0b0c10;
+  --fg: #eef2ff;
+  --muted: rgba(238,242,255,.70);
+  --card: rgba(255,255,255,.06);
+  --card2: rgba(255,255,255,.09);
+  --border: rgba(255,255,255,.10);
+  --border2: rgba(255,255,255,.16);
+  --primary: #7c3aed;
+  --primary2: #a78bfa;
+  --ring: rgba(167,139,250,.45);
+  --danger: #ef4444;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --shadow: 0 10px 30px rgba(0,0,0,0.28);
+  color-scheme: dark;
+}
+
+html.light{
+  --bg: #f7f7fb;
+  --fg: #0f172a;
+  --muted: rgba(15,23,42,.65);
+  --card: rgba(255,255,255,.80);
+  --card2: rgba(255,255,255,.92);
+  --border: rgba(15,23,42,.10);
+  --border2: rgba(15,23,42,.16);
+  --primary: #6d28d9;
+  --primary2: #7c3aed;
+  --ring: rgba(124,58,237,.25);
+  --shadow: 0 10px 30px rgba(15,23,42,0.12);
+  color-scheme: light;
+}
+
+html, body, #root{ height:100%; }
+
+*{ -webkit-tap-highlight-color: transparent; }
+
+::selection{ background: var(--ring); }
+
+.scrollbar::-webkit-scrollbar{ width: 10px; height: 10px; }
+.scrollbar::-webkit-scrollbar-thumb{ background: rgba(148,163,184,.35); border-radius: 999px; }
+html.light .scrollbar::-webkit-scrollbar-thumb{ background: rgba(15,23,42,.18); }
+
+@layer components{
+  .card{
+    @apply rounded-2xl border backdrop-blur;
+    background: var(--card);
+    border-color: var(--border);
+    box-shadow: var(--shadow);
+  }
+  .card-muted{
+    @apply rounded-2xl border;
+    background: var(--card2);
+    border-color: var(--border2);
+  }
+  .btn{
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold transition;
+    border: 1px solid var(--border2);
+    background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
+  }
+  .btn:hover{ transform: translateY(-1px); }
+  .btn:active{ transform: translateY(0px); }
+  .btn-primary{
+    border-color: transparent;
+    background: linear-gradient(180deg, var(--primary), rgba(124,58,237,.75));
+    color: white;
+  }
+  .btn-ghost{
+    background: transparent;
+    border-color: transparent;
+  }
+  .input{
+    @apply w-full rounded-xl px-3 py-2 text-sm outline-none transition;
+    background: rgba(255,255,255,.06);
+    border: 1px solid var(--border);
+  }
+  html.light .input{ background: rgba(15,23,42,.04); }
+  .input:focus{
+    border-color: var(--primary2);
+    box-shadow: 0 0 0 4px var(--ring);
+  }
+  .label{
+    @apply text-sm font-semibold;
+    color: var(--muted);
+  }
+  .help{
+    @apply text-xs;
+    color: var(--muted);
+  }
+  .divider{
+    @apply h-px w-full;
+    background: var(--border);
+  }
+}
