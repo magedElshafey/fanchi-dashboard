@@ -14,22 +14,7 @@ export const authRoutes = {
         </Guard>
       ),
     },
-    {
-      path: "register",
-      element: (
-        <Guard guestOnly={true}>
-          {lazyLoad(() => import("../pages/auth/Register"))}
-        </Guard>
-      ),
-    },
-    {
-      path: "forget-password",
-      element: (
-        <Guard guestOnly={true}>
-          {lazyLoad(() => import("../pages/auth/ForgotPassword"))}
-        </Guard>
-      ),
-    },
+
     // {
     //   path: "forget-password-otp",
     //   element: (

@@ -22,7 +22,8 @@
     "site": "Site Settings",
     "contact": "Contact Settings",
     "social": "Social Platforms",
-    "seo": "SEO Settings"
+    "seo": "SEO Settings",
+    "products": "products"
   },
   "home": {
     "overview": "Overview",
@@ -100,6 +101,29 @@
     },
 
     "terms": "Terms of Service",
-    "privacy": "Privacy Policy"
+    "privacy": "Privacy Policy",
+    "generate": {
+      "code": "product code"
+    }
+  },
+
+  "validation": {
+    "name_ar_min": "Arabic name must be at least 3 characters",
+    "name_en_min": "English name must be at least 3 characters",
+
+    "description_ar_min": "Arabic description must be at least 10 characters",
+    "description_en_min": "English description must be at least 10 characters",
+
+    "sku_required": "SKU is required",
+
+    "prefix_required": "Prefix is required",
+    "prefix_max": "Prefix must not exceed 10 characters",
+
+    "category_required": "Category is required",
+
+    "warranty_number": "Warranty months must be a valid number",
+    "warranty_positive": "Warranty months must be a positive number",
+
+    "is_active": "Status value is invalid"
   }
 }

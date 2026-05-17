@@ -1,7 +1,8 @@
-export const apiUrl: string = "https://q-fanchi.dev.qutell.net/api/site";
+export const apiUrl: string = "https://q-fanchi.dev.qutell.net/api";
 export const baseUrl: string = "https://appadvertisements.almasader.net";
 export const apiRoutes = {
   login: "/dashboard/login",
+  productCodes: "/dashboard/product-codes",
   register: "/dashboard/register",
   sendOtp: "auth/send_otp",
   forgetPasswordOtp: "forget_password/verfication",

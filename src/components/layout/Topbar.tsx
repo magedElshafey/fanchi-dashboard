@@ -43,10 +43,21 @@ export default function Topbar({
   const homeItems: Item[] = useMemo(
     () => [
       {
-        to: "/home/hero",
+        to: "/products",
+        labelKey: "nav.products",
+        icon: <span className="h-2 w-2 rounded-full bg-[var(--primary2)]" />,
+      },
+      {
+        to: "/code-batches",
+        labelKey: "nav.batches",
+        icon: <span className="h-2 w-2 rounded-full bg-[var(--primary2)]" />,
+      },
+      {
+        to: "/generate-code",
         labelKey: "nav.hero",
         icon: <span className="h-2 w-2 rounded-full bg-[var(--primary2)]" />,
       },
+
       {
         to: "/home/stats",
         labelKey: "nav.stats",

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -10,35 +10,12 @@ import Textarea from "../../components/ui/Textarea";
 import { Toggle } from "../../components/ui/Toggle";
 import FileUploader, { FileValue } from "../../components/ui/FileUploader";
 import RichTextEditor from "../../components/ui/RichTextEditor";
+import i18n from "../../i18n";
 
-type EntityKey = "hero" | "stats" | "testimonials" | "social" | "seo";
+type EntityKey = "products";
 
 const base = z.object({
   isActive: z.boolean().default(true),
-});
-
-const heroSchema = base.extend({
-  title: z.string().min(2),
-  subtitle: z.string().optional(),
-  images: z.array(z.string()).default([]),
-});
-
-const statSchema = base.extend({
-  title: z.string().min(2),
-  value: z.coerce.number().min(0),
-  trend: z.coerce.number().min(-100).max(100),
-});
-
-const testimonialSchema = base.extend({
-  name: z.string().min(2),
-  role: z.string().optional(),
-  rating: z.coerce.number().min(1).max(5),
-  comment: z.string().min(5),
-});
-
-const socialSchema = base.extend({
-  platform: z.string().min(2),
-  url: z.string().url(),
 });
 
 const seoSchema = base.extend({
@@ -47,11 +24,48 @@ const seoSchema = base.extend({
   description: z.string().optional(),
 });
 
+const t = i18n.t;
+export const productSchema = () =>
+  z.object({
+    name: z.object({
+      ar: z.string().min(3, t("validation.name_ar_min")),
+
+      en: z.string().min(3, t("validation.name_en_min")),
+    }),
+
+    description: z.object({
+      ar: z.string().min(10, t("validation.description_ar_min")),
+
+      en: z.string().min(10, t("validation.description_en_min")),
+    }),
+
+    sku: z.string().min(1, t("validation.sku_required")),
+
+    prefix: z
+      .string()
+      .min(1, t("validation.prefix_required"))
+      .max(10, t("validation.prefix_max")),
+
+    category: z.string().min(1, t("validation.category_required")),
+
+    warranty_months: z.coerce
+      .number({
+        invalid_type_error: t("validation.warranty_number"),
+      })
+      .positive(t("validation.warranty_positive")),
+
+    is_active: z.coerce.number().refine((val) => val === 0 || val === 1, {
+      message: t("validation.is_active"),
+    }),
+  });
+
+export type ProductSchemaType = z.infer<ReturnType<typeof productSchema>>;
+
 function schemaFor(entity: EntityKey) {
-  if (entity === "hero") return heroSchema;
-  if (entity === "stats") return statSchema;
-  if (entity === "testimonials") return testimonialSchema;
-  if (entity === "social") return socialSchema;
+  if (entity === "products") return productSchema;
+  // if (entity === "stats") return statSchema;
+  // if (entity === "testimonials") return testimonialSchema;
+  // if (entity === "social") return socialSchema;
   return seoSchema;
 }
 
@@ -73,21 +87,38 @@ export default function EntityForm({
 
   const defaults = useMemo(() => {
     const common = { isActive: initial?.isActive ?? true };
-    if (entity === "hero")
+    // if (entity === "hero")
+    //   return {
+    //     ...common,
+    //     title: initial?.title ?? "",
+    //     subtitle: initial?.subtitle ?? "",
+    //     images: initial?.images ?? [],
+    //   };
+    // if (entity === "stats")
+    //   return {
+    //     ...common,
+    //     title: initial?.title ?? "",
+    //     value: initial?.value ?? 0,
+    //     trend: initial?.trend ?? 0,
+    //   };
+    if (entity === "products")
       return {
-        ...common,
-        title: initial?.title ?? "",
-        subtitle: initial?.subtitle ?? "",
-        images: initial?.images ?? [],
-      };
-    if (entity === "stats")
-      return {
-        ...common,
-        title: initial?.title ?? "",
-        value: initial?.value ?? 0,
-        trend: initial?.trend ?? 0,
-      };
+        name: {
+          ar: initial?.name?.ar ?? "",
+          en: initial?.name?.en ?? "",
+        },
 
+        description: {
+          ar: initial?.description?.ar ?? "",
+          en: initial?.description?.en ?? "",
+        },
+
+        sku: initial?.sku ?? "",
+        prefix: initial?.prefix ?? "",
+        category: initial?.category ?? "",
+        warranty_months: initial?.warranty_months ?? 0,
+        is_active: initial?.is_active ?? 1,
+      };
     return {
       ...common,
       key: initial?.key ?? "",
@@ -120,15 +151,7 @@ export default function EntityForm({
 
   return (
     <form className="space-y-4" onSubmit={form.handleSubmit(submit)}>
-      {/* <div className="flex items-center justify-between">
-        <Toggle
-          checked={!!v.isActive}
-          onChange={(next) => form.setValue("isActive", next)}
-          label={t("form.isActive")}
-        />
-      </div> */}
-
-      {entity === "hero" ? (
+      {/* {entity === "hero" ? (
         <>
           <Input
             label={t("form.title")}
@@ -242,9 +265,78 @@ export default function EntityForm({
             {...form.register("description")}
           />
         </>
-      ) : null}
+      ) : null} */}
+      {entity === "products" ? (
+        <>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Input
+              label="Name AR"
+              error={(form.formState.errors.name as any)?.ar?.message as any}
+              {...form.register("name.ar")}
+            />
 
-      <div className="flex flex-wrap gap-2">
+            <Input
+              label="Name EN"
+              error={(form.formState.errors.name as any)?.en?.message as any}
+              {...form.register("name.en")}
+            />
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Textarea
+              label="Description AR"
+              error={
+                (form.formState.errors.description as any)?.ar?.message as any
+              }
+              {...form.register("description.ar")}
+            />
+
+            <Textarea
+              label="Description EN"
+              error={
+                (form.formState.errors.description as any)?.en?.message as any
+              }
+              {...form.register("description.en")}
+            />
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Input
+              label="SKU"
+              error={form.formState.errors.sku?.message as any}
+              {...form.register("sku")}
+            />
+
+            <Input
+              label="Prefix"
+              error={form.formState.errors.prefix?.message as any}
+              {...form.register("prefix")}
+            />
+          </div>
+
+          <Input
+            label="Category"
+            error={form.formState.errors.category?.message as any}
+            {...form.register("category")}
+          />
+
+          <Input
+            type="number"
+            label="Warranty Months"
+            error={form.formState.errors.warranty_months?.message as any}
+            {...form.register("warranty_months")}
+          />
+
+          <div className="flex items-center gap-3">
+            <Toggle
+              checked={form.watch("is_active") === 1}
+              onChange={(next) => form.setValue("is_active", next ? 1 : 0)}
+              label="Active"
+            />
+          </div>
+        </>
+      ) : null}
+      <div className="flex flex-wrap justify-end gap-2 mt-6">
         <Button type="submit" variant="primary" loading={loading}>
           {t("app.save")}
         </Button>

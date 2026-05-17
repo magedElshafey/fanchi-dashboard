@@ -9,6 +9,7 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 import { cn } from "../../lib/cn";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Button from "./Button";
+import i18n from "../../i18n";
 
 export type DataTableProps<T extends object> = {
   data: T[];
@@ -136,7 +137,13 @@ export default function DataTable<T extends object>({
             type="button"
             onClick={() => onPageChange(Math.max(1, page - 1))}
             disabled={page <= 1}
-            leftIcon={<ChevronLeft className="w-4 h-4" />}
+            leftIcon={
+              i18n.language === "en" ? (
+                <ChevronLeft className="w-4 h-4" />
+              ) : (
+                <ChevronRight className="w-4 h-4" />
+              )
+            }
           >
             Prev
           </Button>
@@ -149,7 +156,13 @@ export default function DataTable<T extends object>({
             type="button"
             onClick={() => onPageChange(Math.min(pageCount, page + 1))}
             disabled={page >= pageCount}
-            rightIcon={<ChevronRight className="w-4 h-4" />}
+            rightIcon={
+              i18n.language === "en" ? (
+                <ChevronRight className="w-4 h-4" />
+              ) : (
+                <ChevronLeft className="w-4 h-4" />
+              )
+            }
           >
             Next
           </Button>

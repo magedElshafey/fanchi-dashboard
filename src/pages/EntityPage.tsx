@@ -18,12 +18,14 @@ import {
 import EntityForm from "./forms/EntityForm";
 
 import { Skeleton } from "../components/ui/Skeleton";
+import { Codes } from "../types/entities";
 
-type EntityKey = "hero" | "stats";
-
+type EntityKey = "productCodes" | "products" | "codeBatches";
 const ENTITY_LABEL: Record<EntityKey, string> = {
-  hero: "nav.hero",
-  stats: "nav.stats",
+  productCodes: "nav.hero",
+  products: "nav.products",
+  codeBatches: "nav.codeBatches",
+  // stats: "nav.stats",
 };
 
 export default function EntityPage({
@@ -36,8 +38,12 @@ export default function EntityPage({
   const { t } = useTranslation();
   const [sp, setSp] = useSearchParams();
   const { page, pageSize, q } = parsePagination(sp, { pageSize: 10 });
+  const query = useEntityList<Codes>(entity, {
+    page,
+    per_page: pageSize,
+    q,
+  });
 
-  const query = useEntityList<any>(entity, page, pageSize, q);
   const createMut = useEntityCreate<any>(entity);
   const updateMut = useEntityUpdate<any>(entity);
   const deleteMut = useEntityDelete(entity);
@@ -95,30 +101,97 @@ export default function EntityPage({
       },
     ];
 
-    if (entity === "hero") {
+    if (entity === "productCodes") {
       return [
-        { header: t("form.title"), accessorKey: "title" },
-        { header: t("form.subtitle"), accessorKey: "subtitle" },
+        { header: t("form.title"), accessorKey: "name" },
+        { header: t("generate.code"), accessorKey: "code" },
+        {
+          header: t("form.manufactoring"),
+          accessorKey: "manufacturing_date",
+          cell: ({ getValue }) => {
+            const value = getValue<string>();
+
+            const date = new Date(value).toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+            });
+
+            return <p>{date}</p>;
+          },
+        },
+        {
+          header: t("form.expired"),
+          accessorKey: "expire_date",
+          cell: ({ getValue }) => {
+            const value = getValue<string>();
+
+            const date = new Date(value).toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+            });
+
+            return <p>{date}</p>;
+          },
+        },
       ];
     }
-    if (entity === "stats") {
+    if (entity === "products") {
       return [
-        { header: t("date&time"), accessorKey: "title" },
-        { header: t("customer"), accessorKey: "value" },
+        { header: t("form.title"), accessorKey: "name" },
+        { header: t("generate.code"), accessorKey: "warranty_months" },
         {
-          header: t("phone"),
-          accessorKey: "trend",
+          header: t("form.manufactoring"),
+          accessorKey: "sku",
         },
         {
-          header: t("vehicle"),
-          accessorKey: "trend",
+          header: t("form.expired"),
+          accessorKey: "prefix",
         },
         {
-          header: t("code"),
-          accessorKey: "trend",
+          header: t("form.expired"),
+          accessorKey: "category",
+        },
+        ...common,
+      ];
+    }
+    if (entity === "codeBatches") {
+      return [
+        { header: t("form.title"), accessorKey: "name" },
+        { header: t("generate.code"), accessorKey: "warranty_months" },
+        {
+          header: t("form.manufactoring"),
+          accessorKey: "sku",
+        },
+        {
+          header: t("form.expired"),
+          accessorKey: "prefix",
+        },
+        {
+          header: t("form.expired"),
+          accessorKey: "category",
         },
       ];
     }
+    // if (entity === "stats") {
+    //   return [
+    //     { header: t("date&time"), accessorKey: "title" },
+    //     { header: t("customer"), accessorKey: "value" },
+    //     {
+    //       header: t("phone"),
+    //       accessorKey: "trend",
+    //     },
+    //     {
+    //       header: t("vehicle"),
+    //       accessorKey: "trend",
+    //     },
+    //     {
+    //       header: t("code"),
+    //       accessorKey: "trend",
+    //     },
+    //   ];
+    // }
 
     // seo
     return [

@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 
 function titleForPath(path: string, t: (k: string) => string) {
   if (path === "/") return t("nav.dashboard");
-  if (path.startsWith("/home/hero")) return t("nav.hero");
+  if (path.startsWith("/generate-code")) return t("nav.hero");
   if (path.startsWith("/home/stats")) return t("nav.stats");
   if (path.startsWith("/home/testimonials")) return t("nav.testimonials");
   if (path.startsWith("/settings/site")) return t("nav.site");

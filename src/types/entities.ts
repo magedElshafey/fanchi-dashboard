@@ -74,3 +74,20 @@ export type KpiStats = {
   activitySeries: { day: string; value: number }[];
   topPages: { path: string; views: number }[];
 };
+
+export type Codes = {
+  id: number;
+  product_id: number;
+  batch_id: number;
+  name: string;
+  code: string;
+  qr_code_url: string;
+  manufacturing_date: string;
+  expire_date: string;
+  used_at: string;
+  is_active: boolean;
+  is_used: boolean;
+  created_at: string;
+  updated_at: string;
+  user_id: number;
+};
