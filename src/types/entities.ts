@@ -1,3 +1,5 @@
+// src/types/index.ts
+
 export type Id = string;
 
 export type ListResponse<T> = {
@@ -5,6 +7,7 @@ export type ListResponse<T> = {
   total: number;
   page: number;
   pageSize: number;
+  lastPage: number;
 };
 
 export type HeroItem = {
@@ -12,7 +15,7 @@ export type HeroItem = {
   title: string;
   subtitle?: string;
   isActive: boolean;
-  images: string[]; // base64 strings
+  images: string[];
   createdAt: string;
 };
 
@@ -20,7 +23,7 @@ export type StatItem = {
   id: Id;
   title: string;
   value: number;
-  trend: number; // -100..100
+  trend: number;
   isActive: boolean;
   createdAt: string;
 };
@@ -29,15 +32,15 @@ export type TestimonialItem = {
   id: Id;
   name: string;
   role?: string;
-  rating: number; // 1..5
+  rating: number;
   comment: string;
   isActive: boolean;
   createdAt: string;
 };
 
 export type SiteSettings = {
-  logo?: string; // base64
-  favicon?: string; // base64
+  logo?: string;
+  favicon?: string;
   slogan?: string;
 };
 
@@ -75,19 +78,49 @@ export type KpiStats = {
   topPages: { path: string; views: number }[];
 };
 
-export type Codes = {
-  id: number;
-  product_id: number;
-  batch_id: number;
+// BUG FIX: was `id: number` — inconsistent with shared `Id = string`
+export type ProductCode = {
+  id: Id;
+  product_id: Id;
+  batch_id: Id;
   name: string;
   code: string;
   qr_code_url: string;
   manufacturing_date: string;
   expire_date: string;
-  used_at: string;
+  used_at: string | null;
   is_active: boolean;
   is_used: boolean;
   created_at: string;
   updated_at: string;
-  user_id: number;
+  user_id: Id;
+};
+
+// Added concrete types so entity hooks aren't typed as `any`
+export type Product = {
+  id: Id;
+  name: { ar: string; en: string };
+  description: { ar: string; en: string };
+  sku: string;
+  prefix: string;
+  category: string;
+  warranty_months: number;
+  is_active: 0 | 1;
+  created_at: string;
+  updated_at: string;
+};
+
+export type CodeBatch = {
+  id: Id;
+  batch_number: string;
+  product_id: Id;
+  manufacturing_date: string;
+  expire_date: string;
+  year: number;
+  quantity: number;
+  used_count: number;
+  notes?: { ar?: string; en?: string };
+  is_active: 0 | 1;
+  created_at: string;
+  updated_at: string;
 };

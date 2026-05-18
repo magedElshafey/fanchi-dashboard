@@ -59,8 +59,13 @@ export default function Topbar({
       },
 
       {
-        to: "/home/stats",
-        labelKey: "nav.stats",
+        to: "/verifications",
+        labelKey: "nav.verifications",
+        icon: <span className="h-2 w-2 rounded-full bg-[var(--primary2)]" />,
+      },
+      {
+        to: "/countries",
+        labelKey: "nav.countries",
         icon: <span className="h-2 w-2 rounded-full bg-[var(--primary2)]" />,
       },
     ],
