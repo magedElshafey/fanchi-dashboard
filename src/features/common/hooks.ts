@@ -46,6 +46,7 @@ export const queryKeys = {
   settings: (key: string) => ["settings", key] as const,
 
   kpi: () => ["kpi-stats"] as const,
+  show: (entity: string, id: string) => ["entity", entity, id] as const,
 };
 
 //
@@ -129,7 +130,28 @@ export function useEntityCreate<T>(entity: keyof typeof entityRoutes) {
     },
   });
 }
+//
+// ========================
+// ENTITY SHOW
+// ========================
+//
 
+export function useEntityShow<T>(
+  entity: keyof typeof entityRoutes,
+  id?: string,
+) {
+  return useQuery<T>({
+    queryKey: queryKeys.show(entity, id ?? ""),
+
+    queryFn: async (): Promise<T> => {
+      const res = await Axios.get(`${getEntityRoute(entity)}/${id}`);
+
+      return res.data;
+    },
+
+    enabled: !!id,
+  });
+}
 //
 // ========================
 // UPDATE

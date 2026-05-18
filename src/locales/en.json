@@ -23,7 +23,9 @@
     "contact": "Contact Settings",
     "social": "Social Platforms",
     "seo": "SEO Settings",
-    "products": "products"
+    "products": "products",
+    "batches": "batches",
+    "codeBatches": "batches"
   },
   "home": {
     "overview": "Overview",
@@ -62,7 +64,11 @@
     "role": "Role",
     "comment": "Comment",
     "manufactoring": "manufactoring date",
-    "expired": "expired date"
+    "expired": "expired date",
+    "batch_number": "batch number",
+    "quantity": "quantity",
+    "used_count": "used_count",
+    "year": "year"
   },
   "date&time": "Date & Time",
   "customer": "customer",
@@ -124,6 +130,26 @@
     "warranty_number": "Warranty months must be a valid number",
     "warranty_positive": "Warranty months must be a positive number",
 
-    "is_active": "Status value is invalid"
+    "is_active": "Status value is invalid",
+    "batch_number_min": "Batch number must be at least 3 characters.",
+    "batch_number_max": "Batch number must not exceed 50 characters.",
+
+    "product_required": "Please select a product.",
+
+    "manufacturing_required": "Manufacturing date is required.",
+
+    "expire_required": "Expire date is required.",
+
+    "expire_after_manufacturing": "Expire date must be after manufacturing date.",
+
+    "year_number": "Year must be a valid number.",
+    "year_min": "Year must not be less than 2000.",
+    "year_max": "Year must not exceed 2100.",
+
+    "quantity_number": "Quantity must be a valid number.",
+    "quantity_positive": "Quantity must be greater than zero.",
+
+    "notes_ar_max": "Arabic notes must not exceed 1000 characters.",
+    "notes_en_max": "English notes must not exceed 1000 characters."
   }
 }

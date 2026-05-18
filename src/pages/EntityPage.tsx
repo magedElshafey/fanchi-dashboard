@@ -16,11 +16,10 @@ import {
   useEntityUpdate,
 } from "../features/common/hooks";
 import EntityForm from "./forms/EntityForm";
-
+import { useEntityShow } from "../features/common/hooks";
 import { Skeleton } from "../components/ui/Skeleton";
-import { Codes } from "../types/entities";
 
-type EntityKey = "productCodes" | "products" | "codeBatches";
+export type EntityKey = "productCodes" | "products" | "codeBatches";
 const ENTITY_LABEL: Record<EntityKey, string> = {
   productCodes: "nav.hero",
   products: "nav.products",
@@ -38,7 +37,7 @@ export default function EntityPage({
   const { t } = useTranslation();
   const [sp, setSp] = useSearchParams();
   const { page, pageSize, q } = parsePagination(sp, { pageSize: 10 });
-  const query = useEntityList<Codes>(entity, {
+  const query = useEntityList<any>(entity, {
     page,
     per_page: pageSize,
     q,
@@ -48,7 +47,8 @@ export default function EntityPage({
   const updateMut = useEntityUpdate<any>(entity);
   const deleteMut = useEntityDelete(entity);
 
-  const [editing, setEditing] = useState<any | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const showQuery = useEntityShow<any>(entity, editingId ?? undefined);
   const [open, setOpen] = useState(false);
 
   function onSearchChange(nextQ: string) {
@@ -71,7 +71,7 @@ export default function EntityPage({
                 type="button"
                 variant="ghost"
                 onClick={() => {
-                  setEditing(item);
+                  setEditingId(item.id);
                   setOpen(true);
                 }}
                 leftIcon={<Pencil className="w-4 h-4" />}
@@ -158,40 +158,46 @@ export default function EntityPage({
     }
     if (entity === "codeBatches") {
       return [
-        { header: t("form.title"), accessorKey: "name" },
-        { header: t("generate.code"), accessorKey: "warranty_months" },
+        { header: t("form.batch_number"), accessorKey: "batch_number" },
+        { header: t("form.quantity"), accessorKey: "quantity" },
+        { header: t("form.used_count"), accessorKey: "used_count" },
         {
           header: t("form.manufactoring"),
-          accessorKey: "sku",
+          accessorKey: "manufacturing_date",
+          cell: ({ getValue }) => {
+            const value = getValue<string>();
+
+            const date = new Date(value).toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+            });
+
+            return <p>{date}</p>;
+          },
         },
         {
           header: t("form.expired"),
-          accessorKey: "prefix",
+          accessorKey: "expire_date",
+          cell: ({ getValue }) => {
+            const value = getValue<string>();
+
+            const date = new Date(value).toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+            });
+
+            return <p>{date}</p>;
+          },
         },
         {
-          header: t("form.expired"),
-          accessorKey: "category",
+          header: t("form.year"),
+          accessorKey: "year",
         },
+        ...common,
       ];
     }
-    // if (entity === "stats") {
-    //   return [
-    //     { header: t("date&time"), accessorKey: "title" },
-    //     { header: t("customer"), accessorKey: "value" },
-    //     {
-    //       header: t("phone"),
-    //       accessorKey: "trend",
-    //     },
-    //     {
-    //       header: t("vehicle"),
-    //       accessorKey: "trend",
-    //     },
-    //     {
-    //       header: t("code"),
-    //       accessorKey: "trend",
-    //     },
-    //   ];
-    // }
 
     // seo
     return [
@@ -224,7 +230,7 @@ export default function EntityPage({
             variant="primary"
             leftIcon={<Plus className="w-4 h-4" />}
             onClick={() => {
-              setEditing(null);
+              setEditingId(null);
               setOpen(true);
             }}
           >
@@ -256,7 +262,7 @@ export default function EntityPage({
         <div className="p-4 card">
           <div className="flex items-center justify-between">
             <div className="text-lg font-black">
-              {editing ? t("app.edit") : t("app.add")} • {title}
+              {editingId ? t("app.edit") : t("app.add")} • {title}
             </div>
             <Button
               type="button"
@@ -267,26 +273,43 @@ export default function EntityPage({
             </Button>
           </div>
           <div className="my-3 divider" />
-          <EntityForm
-            entity={entity}
-            initial={editing}
-            loading={createMut.isPending || updateMut.isPending}
-            onCancel={() => setOpen(false)}
-            onSubmit={async (payload) => {
-              try {
-                if (editing) {
-                  await updateMut.mutateAsync({ id: editing.id, payload });
-                  toast.success(t("app.edit"));
-                } else {
-                  await createMut.mutateAsync(payload);
-                  toast.success(t("app.add"));
+
+          {editingId && showQuery.isLoading ? (
+            <div className="space-y-4">
+              <Skeleton className="w-full h-12" />
+              <Skeleton className="w-full h-24" />
+              <Skeleton className="w-full h-12" />
+              <Skeleton className="w-full h-12" />
+              <Skeleton className="w-32 h-10" />
+            </div>
+          ) : (
+            <EntityForm
+              entity={entity}
+              initial={showQuery.data?.data}
+              loading={createMut.isPending || updateMut.isPending}
+              onCancel={() => setOpen(false)}
+              onSubmit={async (payload) => {
+                try {
+                  if (editingId) {
+                    await updateMut.mutateAsync({
+                      id: editingId,
+                      payload,
+                    });
+
+                    toast.success(t("app.edit"));
+                  } else {
+                    await createMut.mutateAsync(payload);
+
+                    toast.success(t("app.add"));
+                  }
+
+                  setOpen(false);
+                } catch (e: any) {
+                  toast.error(e?.message ?? "Failed");
                 }
-                setOpen(false);
-              } catch (e: any) {
-                toast.error(e?.message ?? "Failed");
-              }
-            }}
-          />
+              }}
+            />
+          )}
         </div>
       ) : null}
     </div>

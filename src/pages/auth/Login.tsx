@@ -3,6 +3,7 @@ import AuthHeader from "../../components/auth/AuthHeader";
 import Input from "../../components/ui/Input";
 import { useTranslation } from "react-i18next";
 import useLoginLogic from "../../features/auth/logic/useLoginLogic";
+import Spinner from "../../components/ui/Spinner";
 export default function Login() {
   const { t } = useTranslation();
   const { errors, register, onSubmit, handleSubmit, isPending } =
@@ -33,10 +34,11 @@ export default function Login() {
         </div>
 
         <button
+          type="submit"
           disabled={isPending}
           className="w-full transition-opacity duration-150 cursor-pointer btn btn-primary h-11 disabled:bg-opacity-30"
         >
-          {t("auth.signIn")}
+          {isPending ? <Spinner /> : t("auth.signIn")}
         </button>
       </form>
     </AuthCard>
