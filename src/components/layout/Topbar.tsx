@@ -78,6 +78,11 @@ export default function Topbar({
         labelKey: "nav.roles",
         icon: <span className="h-2 w-2 rounded-full bg-[var(--primary2)]" />,
       },
+      {
+        to: "/fetch_all_permissions",
+        labelKey: "nav.fetch_all_permissions",
+        icon: <span className="h-2 w-2 rounded-full bg-[var(--primary2)]" />,
+      },
     ],
     [],
   );

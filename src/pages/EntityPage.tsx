@@ -22,6 +22,7 @@ import EntityForm from "./forms/EntityForm";
 import { Skeleton } from "../components/ui/Skeleton";
 import { useEntityList as useProductList } from "../features/common/hooks";
 import type { Product } from "../types/entities";
+import ExportExcelButton from "../components/ui/ExportExcelButton";
 // ---------------------------------------------------------------------------
 // Entity label map
 // ---------------------------------------------------------------------------
@@ -36,6 +37,7 @@ const ENTITY_LABEL: Record<EntityKey, string> = {
   countries: "nav.countries",
   cities: "nav.cities",
   roles: "nav.roles",
+  fetch_all_permissions: "nav.fetch_all_permissions",
 };
 
 // ---------------------------------------------------------------------------
@@ -57,10 +59,14 @@ function formatDate(value: string | undefined): string {
 
 export default function EntityPage({
   entity,
-  hasEdit,
+  hasEdit = true,
+  hasExcel = false,
+  excelEndPoint = "",
 }: {
   entity: EntityKey;
-  hasEdit: boolean;
+  hasEdit?: boolean;
+  hasExcel?: boolean;
+  excelEndPoint?: string;
 }) {
   const { t } = useTranslation();
   const [sp, setSp] = useSearchParams();
@@ -95,7 +101,10 @@ export default function EntityPage({
   // Products list for codeBatch form dropdown — only fetched when needed
   const productsQuery = useProductList<Product>("products", { per_page: 400 });
   const countriesQuery = useEntityList<any>("countries", { per_page: 400 });
-  console.log("countriesQuery", countriesQuery?.data);
+  const permessionsQuery = useEntityList<any>("fetch_all_permissions", {
+    per_page: 400,
+  });
+
   // ---------------------------------------------------------------------------
   // Handlers
   // ---------------------------------------------------------------------------
@@ -290,6 +299,12 @@ export default function EntityPage({
         actionColumn,
       ];
     }
+    if (entity === "fetch_all_permissions") {
+      return [
+        { header: t("form.permessionName"), accessorKey: "name" },
+        actionColumn,
+      ];
+    }
     // SEO fallback
     return [
       { header: t("settings.key"), accessorKey: "key" },
@@ -332,16 +347,28 @@ export default function EntityPage({
             placeholder={t("app.search")}
           />
         </div>
-        {hasEdit && (
-          <Button
-            type="button"
-            variant="primary"
-            leftIcon={<Plus className="w-4 h-4" />}
-            onClick={openCreate}
-          >
-            {t("app.add")} {title}
-          </Button>
-        )}
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Export */}
+          {hasExcel && (
+            <ExportExcelButton
+              endpoint={excelEndPoint}
+              fileName="users.xlsx"
+              label={t("app.export_excel")}
+            />
+          )}
+
+          {/* Add */}
+          {hasEdit && (
+            <Button
+              type="button"
+              variant="primary"
+              leftIcon={<Plus className="w-4 h-4" />}
+              onClick={openCreate}
+            >
+              {t("app.add")} {title}
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Table */}
@@ -390,7 +417,9 @@ export default function EntityPage({
             (entity === "products" ||
               entity === "codeBatches" ||
               entity === "countries" ||
-              entity === "cities") && (
+              entity === "cities" ||
+              entity === "roles" ||
+              entity === "fetch_all_permissions") && (
               <EntityForm
                 entity={entity}
                 initial={formInitial as never}
@@ -404,6 +433,9 @@ export default function EntityPage({
                 }
                 countries={
                   entity === "cities" ? countriesQuery.data?.items : undefined
+                }
+                permessions={
+                  entity === "roles" ? permessionsQuery.data?.items : undefined
                 }
               />
             )

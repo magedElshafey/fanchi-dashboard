@@ -9,6 +9,12 @@ import Input from "../../components/ui/Input";
 import Textarea from "../../components/ui/Textarea";
 import Select from "../../components/ui/Select";
 import type { Product } from "../../types/entities";
+import MultiSelect from "../../components/ui/MultiSelect";
+
+type Permission = {
+  id: number;
+  name: string;
+};
 // ---------------------------------------------------------------------------
 // Schemas
 // ---------------------------------------------------------------------------
@@ -124,6 +130,40 @@ const useCitiesSchema = () => {
     [t], // eslint-disable-line react-hooks/exhaustive-deps
   );
 };
+const useRolesSchema = () => {
+  const { t } = useTranslation();
+
+  return useMemo(
+    () =>
+      z.object({
+        name: z.object({
+          ar: z.string().min(3, t("validation.name_ar_min")),
+          en: z.string().min(3, t("validation.name_en_min")),
+        }),
+
+        permission_ids: z
+          .array(z.string())
+          .min(1, t("validation.permissions_required"))
+          .transform((vals) => vals.map(Number)),
+      }),
+
+    [t],
+  );
+};
+const usePermessionSchema = () => {
+  const { t } = useTranslation();
+
+  return useMemo(
+    () =>
+      z.object({
+        name: z.object({
+          ar: z.string().min(3, t("validation.name_ar_min")),
+          en: z.string().min(3, t("validation.name_en_min")),
+        }),
+      }),
+    [t],
+  );
+};
 // ---------------------------------------------------------------------------
 // Types
 //
@@ -136,24 +176,33 @@ type ProductSchema = ReturnType<typeof useProductSchema>;
 type CodeBatchSchema = ReturnType<typeof useCodeBatchSchema>;
 type CountriesSchema = ReturnType<typeof useCountriesSchema>;
 type CitesSchema = ReturnType<typeof useCitiesSchema>;
-
+type RolesSchema = ReturnType<typeof useRolesSchema>;
+type PermessionSchema = ReturnType<typeof usePermessionSchema>;
 // The form's internal field values (before transform)
 type ProductFormValues = z.input<ProductSchema>;
 type CodeBatchFormValues = z.input<CodeBatchSchema>;
 type CountriesFormValues = z.input<CountriesSchema>;
 type CitiesFormValues = z.input<CitesSchema>;
-
+type RolesFormValues = z.input<RolesSchema>;
+type PermessionFormValues = z.input<PermessionSchema>;
 // What onSubmit receives (after transform — product_id is now number)
 type ProductOutput = z.output<ProductSchema>;
 type CodeBatchOutput = z.output<CodeBatchSchema>;
 type CountriesOutput = z.output<CountriesSchema>;
 type CitiesOutput = z.output<CitesSchema>;
+type RolesOutput = z.output<RolesSchema>;
+type PermessionOutput = z.output<PermessionSchema>;
 
 type EntityMap = {
   products: { input: ProductFormValues; output: ProductOutput };
   codeBatches: { input: CodeBatchFormValues; output: CodeBatchOutput };
   countries: { input: CountriesFormValues; output: CountriesOutput };
   cities: { input: CitiesFormValues; output: CitiesOutput };
+  roles: { input: RolesFormValues; output: RolesOutput };
+  fetch_all_permissions: {
+    input: PermessionFormValues;
+    output: PermessionOutput;
+  };
 };
 
 type EntityFormProps<K extends keyof EntityMap> = {
@@ -164,6 +213,7 @@ type EntityFormProps<K extends keyof EntityMap> = {
   loading?: boolean;
   products?: Pick<Product, "id" | "name">[];
   countries?: Pick<Product, "id" | "name">[];
+  permessions?: Permission[];
 };
 
 // ---------------------------------------------------------------------------
@@ -228,6 +278,28 @@ function buildCitiesDefaults(
     name: { ar: initial?.name?.ar ?? "", en: initial?.name?.en ?? "" },
 
     country_id: initial?.country_id != null ? String(initial.country_id) : "",
+  };
+}
+function buildRolesDefaults(
+  initial?: Partial<RolesFormValues> | null,
+): RolesFormValues {
+  return {
+    name: {
+      ar: initial?.name?.ar ?? "",
+      en: initial?.name?.en ?? "",
+    },
+
+    permission_ids: initial?.permission_ids?.map((id) => String(id)) ?? [],
+  };
+}
+function buildPermessionsDefaults(
+  initial?: Partial<PermessionFormValues> | null,
+): PermessionFormValues {
+  return {
+    name: {
+      ar: initial?.name?.ar ?? "",
+      en: initial?.name?.en ?? "",
+    },
   };
 }
 // ---------------------------------------------------------------------------
@@ -525,7 +597,7 @@ function CountriesForm({
   );
 }
 // ---------------------------------------------------------------------------
-// CitiesForm
+// Cities Form
 // ---------------------------------------------------------------------------
 
 function CitiesForm({
@@ -611,6 +683,149 @@ function CitiesForm({
   );
 }
 // ---------------------------------------------------------------------------
+// Roles form
+// --
+function RolesForm({
+  initial,
+  onSubmit,
+  onCancel,
+  loading,
+  permessions = [],
+}: Omit<EntityFormProps<"roles">, "entity">) {
+  const { t } = useTranslation();
+
+  const schema = useRolesSchema();
+
+  const defaultValues = useMemo(
+    () => buildRolesDefaults(initial),
+    [JSON.stringify(initial)],
+  );
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    control,
+    formState: { errors },
+  } = useForm<RolesFormValues, unknown, RolesOutput>({
+    resolver: zodResolver(schema),
+    defaultValues,
+    mode: "onChange",
+  });
+
+  useEffect(() => {
+    reset(defaultValues);
+  }, [JSON.stringify(defaultValues)]);
+
+  return (
+    <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <Input
+          label={t("form.name_ar")}
+          error={errors.name?.ar?.message}
+          {...register("name.ar")}
+        />
+
+        <Input
+          label={t("form.name_en")}
+          error={errors.name?.en?.message}
+          {...register("name.en")}
+        />
+      </div>
+
+      <Controller
+        name="permission_ids"
+        control={control}
+        render={({ field, fieldState }) => (
+          <MultiSelect
+            label={t("form.permissions")}
+            placeholder={t("form.select_permissions")}
+            options={permessions.map((p) => ({
+              value: p.id,
+              label: p.name,
+            }))}
+            value={field.value}
+            onChange={field.onChange}
+            error={fieldState.error?.message}
+          />
+        )}
+      />
+
+      <div className="flex flex-wrap justify-end gap-2 mt-6">
+        <Button type="submit" variant="primary" loading={loading}>
+          {t("app.save")}
+        </Button>
+
+        <Button type="button" onClick={onCancel}>
+          {t("app.cancel")}
+        </Button>
+      </div>
+    </form>
+  );
+}
+// ---------------------------------------------------------------------------
+// Permessions form
+// --
+function PermessionsForm({
+  initial,
+  onSubmit,
+  onCancel,
+  loading,
+}: Omit<EntityFormProps<"fetch_all_permissions">, "entity">) {
+  const { t } = useTranslation();
+
+  const schema = usePermessionSchema();
+
+  const defaultValues = useMemo(
+    () => buildPermessionsDefaults(initial),
+    [JSON.stringify(initial)],
+  );
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+
+    formState: { errors },
+  } = useForm<PermessionFormValues, unknown, PermessionOutput>({
+    resolver: zodResolver(schema),
+    defaultValues,
+    mode: "onChange",
+  });
+
+  useEffect(() => {
+    reset(defaultValues);
+  }, [JSON.stringify(defaultValues)]);
+
+  return (
+    <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <Input
+          label={t("form.name_ar")}
+          error={errors.name?.ar?.message}
+          {...register("name.ar")}
+        />
+
+        <Input
+          label={t("form.name_en")}
+          error={errors.name?.en?.message}
+          {...register("name.en")}
+        />
+      </div>
+
+      <div className="flex flex-wrap justify-end gap-2 mt-6">
+        <Button type="submit" variant="primary" loading={loading}>
+          {t("app.save")}
+        </Button>
+
+        <Button type="button" onClick={onCancel}>
+          {t("app.cancel")}
+        </Button>
+      </div>
+    </form>
+  );
+}
+// ---------------------------------------------------------------------------
 // Public dispatcher
 // ---------------------------------------------------------------------------
 
@@ -625,6 +840,7 @@ export default function EntityForm<K extends keyof EntityMap>({
 
   products,
   countries,
+  permessions,
 }: EntityFormProps<K>) {
   if (entity === "products") {
     return (
@@ -665,6 +881,27 @@ export default function EntityForm<K extends keyof EntityMap>({
         onCancel={onCancel}
         loading={loading}
         countries={countries}
+      />
+    );
+  }
+  if (entity === "roles") {
+    return (
+      <RolesForm
+        initial={initial as Partial<RolesFormValues>}
+        onSubmit={onSubmit as (v: RolesOutput) => Promise<void>}
+        onCancel={onCancel}
+        loading={loading}
+        permessions={permessions}
+      />
+    );
+  }
+  if (entity === "fetch_all_permissions") {
+    return (
+      <PermessionsForm
+        initial={initial as Partial<PermessionFormValues>}
+        onSubmit={onSubmit as (v: PermessionOutput) => Promise<void>}
+        onCancel={onCancel}
+        loading={loading}
       />
     );
   }

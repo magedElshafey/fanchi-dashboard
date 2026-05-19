@@ -16,15 +16,24 @@ function entityRoute(
     | "verifications"
     | "countries"
     | "cities"
-    | "roles",
-  hasEdit: boolean,
+    | "roles"
+    | "fetch_all_permissions",
+  hasEdit: boolean = true,
+  hasExcel: boolean = false,
+  excelEndPoint: string = "",
 ): RouteObject {
   return {
     path,
     element: (
       <Suspense fallback={<TransparentFallback />}>
         {/* BUG FIX: trailing comma after self-closing JSX tag was a syntax error */}
-        <EntityPage key={entity} hasEdit={hasEdit} entity={entity} />
+        <EntityPage
+          key={entity}
+          hasEdit={hasEdit}
+          entity={entity}
+          hasExcel={hasExcel}
+          excelEndPoint={excelEndPoint}
+        />
       </Suspense>
     ),
   };
@@ -42,11 +51,18 @@ export const websiteRoutes: RouteObject = {
       element: lazyLoad(() => import("../pages/DashboardHome")),
     },
     entityRoute("generate-code", "productCodes", false),
-    entityRoute("products", "products", true),
-    entityRoute("code-batches", "codeBatches", true),
-    entityRoute("verifications", "verifications", false),
-    entityRoute("countries", "countries", true),
-    entityRoute("cities", "cities", true),
-    // entityRoute("roles", "roles", false),
+    entityRoute("products", "products"),
+    entityRoute("code-batches", "codeBatches"),
+    entityRoute(
+      "verifications",
+      "verifications",
+      false,
+      true,
+      "dashboard/users/export/link",
+    ),
+    entityRoute("countries", "countries"),
+    entityRoute("cities", "cities"),
+    entityRoute("fetch_all_permissions", "fetch_all_permissions"),
+    entityRoute("roles", "roles"),
   ],
 };

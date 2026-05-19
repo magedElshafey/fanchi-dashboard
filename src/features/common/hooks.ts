@@ -14,6 +14,7 @@ export const entityRoutes = {
   countries: "/dashboard/countries",
   cities: "/dashboard/cities",
   roles: "/dashboard/roles",
+  fetch_all_permissions: "/dashboard/fetch_all_permissions",
 } as const;
 
 export type EntityRouteKey = keyof typeof entityRoutes;

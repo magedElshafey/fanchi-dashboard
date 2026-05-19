@@ -12,7 +12,7 @@ import {
   BarChart,
   Bar,
 } from "recharts";
-import { TrendingUp, Users, ShoppingCart, Percent } from "lucide-react";
+import { TrendingU0p, Users, ShoppingCart, Percent } from "lucide-react";
 
 function KpiCard({
   title,

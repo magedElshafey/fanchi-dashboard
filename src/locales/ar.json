@@ -1,156 +1,108 @@
 {
   "app": {
-    "title": "لوحة تحكم MVP",
-    "search": "بحث",
-    "add": "إضافة",
+    "search": "بحث...",
+    "confirmDelete": "هل أنت متأكد من حذف هذا العنصر؟",
+    "deleteSuccess": "تم الحذف بنجاح",
+    "editSuccess": "تم التعديل بنجاح",
+    "addSuccess": "تمت الإضافة بنجاح",
+    "error": "حدث خطأ ما",
+    "actions": "الإجراءات",
     "edit": "تعديل",
     "delete": "حذف",
+    "add": "إضافة",
     "save": "حفظ",
     "cancel": "إلغاء",
-    "actions": "إجراءات",
-    "loading": "جاري التحميل...",
-    "noResults": "لا توجد نتائج",
-    "confirmDelete": "هل أنت متأكد أنك تريد حذف هذا العنصر؟"
+    "noResults": "لا توجد نتائج"
   },
   "nav": {
-    "products": "المنتجات",
     "dashboard": "لوحة التحكم",
-    "home": "الرئيسية",
-    "hero": "إنشاء رموز",
-    "verifications": "قاعدة بيانات التحقق",
-    "testimonials": "آراء العملاء",
-    "settings": "الإعدادات",
-    "site": "إعدادات الموقع",
-    "contact": "إعدادات التواصل",
-    "social": "منصات التواصل",
-    "seo": "إعدادات السيو",
+    "products": "المنتجات",
     "batches": "الدفعات",
-    "codeBatches": "الدفعات"
-  },
-  "home": {
-    "overview": "نظرة عامة",
-    "kpis": "مؤشرات الأداء",
-    "revenue": "الإيراد",
-    "users": "المستخدمين",
-    "orders": "الطلبات",
-    "conversion": "التحويل",
-    "traffic": "الزيارات",
-    "topPages": "أفضل الصفحات",
-    "activity": "النشاط (آخر 14 يوم)"
-  },
-  "settings": {
-    "logo": "اللوجو",
-    "favicon": "الأيقونة",
-    "slogan": "السلوغان",
-    "phone": "الهاتف",
-    "email": "البريد",
-    "address": "العنوان",
-    "mapIframe": "كود الخريطة",
-    "platform": "المنصة",
-    "url": "الرابط",
-    "key": "المفتاح",
-    "value": "القيمة",
-    "title": "العنوان",
-    "description": "الوصف"
+    "codeBatches": "دفعات الأكواد",
+    "hero": "توليد الأكواد",
+    "verifications": "عمليات التحقق",
+    "countries": "الدول",
+    "cities": "المدن",
+    "roles": "الصلاحيات"
   },
   "form": {
-    "title": "إسم المنتج",
-    "subtitle": "رقم الدفعة",
-    "body": "المحتوى",
-    "isActive": "مُفعل",
-    "images": "صور",
-    "rating": "التقييم",
-    "name": "الاسم",
-    "role": "الوظيفة",
-    "comment": "التعليق",
-    "manufactoring": "تاريخ التصنيع",
-    "expired": "تاريخ انتهاء الصلاحية",
+    "title": "العنوان",
+    "manufacturing_date": "تاريخ التصنيع",
+    "expire_date": "تاريخ الانتهاء",
+    "expired": "منتهي",
+    "category": "الفئة",
+    "warranty_months": "مدة الضمان بالشهور",
+    "sku": "SKU",
+    "prefix": "البادئة",
     "batch_number": "رقم الدفعة",
     "quantity": "الكمية",
-    "used_count": "عدد مرات الاستخدام",
-    "year": "السنة"
-  },
-  "date&time": "التاريخ و الوقت",
-  "customer": "إسم العميل",
-  "phone": "الهاتف",
-  "vehicle": "المركبة",
-  "code": "كود التحقق",
-
-  "auth": {
-    "login": {
-      "title": "مرحبًا بعودتك",
-      "subtitle": "سجّل الدخول للوصول إلى لوحة التحكم الخاصة بك",
-      "footer": {
-        "text": "ليس لديك حساب؟",
-        "action": "إنشاء حساب"
-      }
-    },
-    "email": "البريد الإلكتروني",
-    "password": "كلمة المرور",
-    "signIn": "تسجيل الدخول",
-    "forget": "هل نسيت كلمة المرور؟",
-
-    "fullName": "الاسم الكامل",
-    "role": "الدور",
-    "confirmPassword": "تأكيد كلمة المرور",
-    "createAccount": "إنشاء حساب",
-
-    "register": {
-      "title": "إنشاء حساب",
-      "subtitle": "إنشاء حساب جديد للوحة التحكم",
-
-      "agreement": "من خلال إنشاء حساب فإنك توافق على",
-
-      "footer": {
-        "text": "لديك حساب بالفعل؟",
-        "action": "تسجيل الدخول"
-      }
-    },
-
-    "terms": "شروط الخدمة",
-    "privacy": "سياسة الخصوصية"
+    "used_count": "عدد المستخدم",
+    "year": "السنة",
+    "dealer_name": "اسم التاجر",
+    "entered_code": "الكود المُدخل",
+    "productName": "اسم المنتج",
+    "userName": "اسم المستخدم",
+    "userEmail": "البريد الإلكتروني",
+    "userPhone": "رقم الهاتف",
+    "carBrand": "ماركة السيارة",
+    "carModel": "موديل السيارة",
+    "countryName": "اسم الدولة",
+    "cityName": "اسم المدينة",
+    "roleName": "اسم الصلاحية",
+    "isActive": "نشط",
+    "name_ar": "الاسم بالعربية",
+    "name_en": "الاسم بالإنجليزية",
+    "description_ar": "الوصف بالعربية",
+    "description_en": "الوصف بالإنجليزية",
+    "product": "المنتج",
+    "select_product": "اختر المنتج",
+    "notes_en": "ملاحظات",
+    "country": "الدولة",
+    "select_country": "اختر الدولة"
   },
   "generate": {
-    "code": "كود المنتج"
+    "code": "الكود"
   },
-
+  "settings": {
+    "key": "المفتاح",
+    "title": "العنوان"
+  },
   "validation": {
-    "name_ar_min": "الاسم العربي يجب ألا يقل عن 3 حروف",
-    "name_en_min": "الاسم الإنجليزي يجب ألا يقل عن 3 حروف",
+    "name_ar_min": "يجب ألا يقل الاسم بالعربية عن 3 أحرف",
+    "name_en_min": "يجب ألا يقل الاسم بالإنجليزية عن 3 أحرف",
 
-    "description_ar_min": "الوصف العربي يجب ألا يقل عن 10 حروف",
-    "description_en_min": "الوصف الإنجليزي يجب ألا يقل عن 10 حروف",
+    "description_ar_min": "يجب ألا يقل الوصف بالعربية عن 10 أحرف",
+    "description_en_min": "يجب ألا يقل الوصف بالإنجليزية عن 10 أحرف",
 
     "sku_required": "حقل SKU مطلوب",
 
-    "prefix_required": "حقل Prefix مطلوب",
-    "prefix_max": "يجب ألا يزيد طول Prefix عن 10 حروف",
+    "prefix_required": "حقل البادئة مطلوب",
+    "prefix_max": "يجب ألا تزيد البادئة عن 10 أحرف",
 
-    "category_required": "القسم مطلوب",
+    "category_required": "الفئة مطلوبة",
 
-    "warranty_number": "عدد الشهور يجب أن يكون رقم صحيح",
-    "warranty_positive": "عدد الشهور يجب أن يكون رقم موجب",
+    "warranty_number": "مدة الضمان يجب أن تكون رقم",
+    "warranty_positive": "مدة الضمان يجب أن تكون أكبر من 0",
 
-    "is_active": "قيمة الحالة غير صحيحة",
-    "batch_number_min": "رقم التشغيلة يجب ألا يقل عن 3 أحرف.",
-    "batch_number_max": "رقم التشغيلة يجب ألا يزيد عن 50 حرفًا.",
+    "batch_number_min": "يجب ألا يقل رقم الدفعة عن 3 أحرف",
+    "batch_number_max": "يجب ألا يزيد رقم الدفعة عن 50 حرف",
 
-    "product_required": "يرجى اختيار المنتج.",
+    "product_required": "المنتج مطلوب",
 
-    "manufacturing_required": "تاريخ التصنيع مطلوب.",
+    "manufacturing_required": "تاريخ التصنيع مطلوب",
+    "expire_required": "تاريخ الانتهاء مطلوب",
 
-    "expire_required": "تاريخ الانتهاء مطلوب.",
+    "year_number": "السنة يجب أن تكون رقم",
+    "year_min": "يجب ألا تقل السنة عن 2000",
+    "year_max": "يجب ألا تزيد السنة عن 2100",
 
-    "expire_after_manufacturing": "يجب أن يكون تاريخ الانتهاء بعد تاريخ التصنيع.",
+    "quantity_number": "الكمية يجب أن تكون رقم",
+    "quantity_positive": "الكمية يجب أن تكون أكبر من 0",
 
-    "year_number": "السنة يجب أن تكون رقمًا صحيحًا.",
-    "year_min": "السنة يجب ألا تقل عن 2000.",
-    "year_max": "السنة يجب ألا تزيد عن 2100.",
+    "notes_en_max": "يجب ألا تتجاوز الملاحظات 1000 حرف",
 
-    "quantity_number": "الكمية يجب أن تكون رقمًا صحيحًا.",
-    "quantity_positive": "الكمية يجب أن تكون أكبر من صفر.",
+    "expire_after_manufacturing": "يجب أن يكون تاريخ الانتهاء بعد تاريخ التصنيع",
 
-    "notes_ar_max": "الملاحظات بالعربية يجب ألا تزيد عن 1000 حرف.",
-    "notes_en_max": "الملاحظات بالإنجليزية يجب ألا تزيد عن 1000 حرف."
+    "country_required": "الدولة مطلوبة"
   }
 }
