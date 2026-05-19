@@ -1,7 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useKpiStats } from "../features/common/hooks";
-import { CardSkeleton, Skeleton } from "../components/ui/Skeleton";
+import { CardSkeleton } from "../components/ui/Skeleton";
 import {
   LineChart,
   Line,
@@ -12,7 +12,7 @@ import {
   BarChart,
   Bar,
 } from "recharts";
-import { TrendingU0p, Users, ShoppingCart, Percent } from "lucide-react";
+import { Users, ShoppingCart, Percent, TrendingUp } from "lucide-react";
 
 function KpiCard({
   title,
