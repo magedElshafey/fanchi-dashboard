@@ -97,7 +97,28 @@ const useCountriesSchema = () => {
   return useMemo(
     () =>
       z.object({
-        name: z.string().max(1000, t("validation.cityName")),
+        name: z.object({
+          ar: z.string().min(3, t("validation.name_ar_min")),
+          en: z.string().min(3, t("validation.name_en_min")),
+        }),
+      }),
+
+    [t], // eslint-disable-line react-hooks/exhaustive-deps
+  );
+};
+const useCitiesSchema = () => {
+  const { t } = useTranslation();
+  return useMemo(
+    () =>
+      z.object({
+        name: z.object({
+          ar: z.string().min(3, t("validation.name_ar_min")),
+          en: z.string().min(3, t("validation.name_en_min")),
+        }),
+        country_id: z
+          .string({ required_error: t("validation. country_required") })
+          .min(1, t("validation. country_required"))
+          .transform((val) => Number(val)),
       }),
 
     [t], // eslint-disable-line react-hooks/exhaustive-deps
@@ -114,21 +135,25 @@ const useCountriesSchema = () => {
 type ProductSchema = ReturnType<typeof useProductSchema>;
 type CodeBatchSchema = ReturnType<typeof useCodeBatchSchema>;
 type CountriesSchema = ReturnType<typeof useCountriesSchema>;
+type CitesSchema = ReturnType<typeof useCitiesSchema>;
 
 // The form's internal field values (before transform)
 type ProductFormValues = z.input<ProductSchema>;
 type CodeBatchFormValues = z.input<CodeBatchSchema>;
 type CountriesFormValues = z.input<CountriesSchema>;
+type CitiesFormValues = z.input<CitesSchema>;
 
 // What onSubmit receives (after transform — product_id is now number)
 type ProductOutput = z.output<ProductSchema>;
 type CodeBatchOutput = z.output<CodeBatchSchema>;
 type CountriesOutput = z.output<CountriesSchema>;
+type CitiesOutput = z.output<CitesSchema>;
 
 type EntityMap = {
   products: { input: ProductFormValues; output: ProductOutput };
   codeBatches: { input: CodeBatchFormValues; output: CodeBatchOutput };
   countries: { input: CountriesFormValues; output: CountriesOutput };
+  cities: { input: CitiesFormValues; output: CitiesOutput };
 };
 
 type EntityFormProps<K extends keyof EntityMap> = {
@@ -138,6 +163,7 @@ type EntityFormProps<K extends keyof EntityMap> = {
   onCancel: () => void;
   loading?: boolean;
   products?: Pick<Product, "id" | "name">[];
+  countries?: Pick<Product, "id" | "name">[];
 };
 
 // ---------------------------------------------------------------------------
@@ -192,10 +218,18 @@ function buildCountriesDefaults(
   initial?: Partial<CountriesFormValues> | null,
 ): CountriesFormValues {
   return {
-    name: initial?.name ?? "",
+    name: { ar: initial?.name?.ar ?? "", en: initial?.name?.en ?? "" },
   };
 }
+function buildCitiesDefaults(
+  initial?: Partial<CitiesFormValues> | null,
+): CitiesFormValues {
+  return {
+    name: { ar: initial?.name?.ar ?? "", en: initial?.name?.en ?? "" },
 
+    country_id: initial?.country_id != null ? String(initial.country_id) : "",
+  };
+}
 // ---------------------------------------------------------------------------
 // ProductForm
 // ---------------------------------------------------------------------------
@@ -438,6 +472,8 @@ function CodeBatchForm({
 function CountriesForm({
   initial,
   onSubmit,
+  onCancel,
+  loading,
 }: Omit<EntityFormProps<"countries">, "entity">) {
   const { t } = useTranslation();
   const schema = useCountriesSchema();
@@ -465,12 +501,111 @@ function CountriesForm({
 
   return (
     <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid gap-3 mb-4 sm:grid-cols-2">
         <Input
-          label={t("form.name")}
-          error={errors.name?.message}
-          {...register("name")}
+          label={t("form.name_ar")}
+          error={errors.name?.ar?.message}
+          {...register("name.ar")}
         />
+        <Input
+          label={t("form.name_en")}
+          error={errors.name?.en?.message}
+          {...register("name.en")}
+        />
+      </div>
+      <div className="flex flex-wrap justify-end gap-2 mt-6">
+        <Button type="submit" variant="primary" loading={loading}>
+          {t("app.save")}
+        </Button>
+        <Button type="button" onClick={onCancel}>
+          {t("app.cancel")}
+        </Button>
+      </div>
+    </form>
+  );
+}
+// ---------------------------------------------------------------------------
+// CitiesForm
+// ---------------------------------------------------------------------------
+
+function CitiesForm({
+  initial,
+  onSubmit,
+  onCancel,
+  loading,
+  countries = [],
+}: Omit<EntityFormProps<"cities">, "entity">) {
+  const { t } = useTranslation();
+  const schema = useCitiesSchema();
+
+  const defaultValues = useMemo(
+    () => buildCitiesDefaults(initial),
+    [JSON.stringify(initial)], // eslint-disable-line react-hooks/exhaustive-deps
+  );
+
+  const {
+    register,
+    handleSubmit,
+
+    reset,
+    control, // ← needed for Controller
+    formState: { errors },
+  } = useForm<CitiesFormValues, unknown, CitiesOutput>({
+    resolver: zodResolver(schema),
+    defaultValues,
+    mode: "onChange",
+  });
+
+  useEffect(() => {
+    reset(defaultValues);
+  }, [JSON.stringify(defaultValues)]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return (
+    <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid gap-3 sm:grid-cols-2">
+          <Input
+            label={t("form.name_ar")}
+            error={errors.name?.ar?.message}
+            {...register("name.ar")}
+          />
+          <Input
+            label={t("form.name_en")}
+            error={errors.name?.en?.message}
+            {...register("name.en")}
+          />
+        </div>
+        <Controller
+          name="country_id"
+          control={control}
+          render={({ field, fieldState }) => (
+            <Select
+              label={t("form.country")}
+              placeholder={t("form.select_country")}
+              options={countries.map((p) => ({
+                value: p.id,
+                label: typeof p.name === "string" ? p.name : p.name.en,
+              }))}
+              // Controlled: value always reflects RHF state
+              value={field.value}
+              // Pass the string value directly — schema handles the transform
+              onChange={(e) => field.onChange(e.target.value)}
+              onBlur={field.onBlur}
+              name={field.name}
+              ref={field.ref}
+              error={fieldState.error?.message}
+            />
+          )}
+        />
+      </div>
+
+      <div className="flex flex-wrap justify-end gap-2 mt-6">
+        <Button type="submit" variant="primary" loading={loading}>
+          {t("app.save")}
+        </Button>
+        <Button type="button" onClick={onCancel}>
+          {t("app.cancel")}
+        </Button>
       </div>
     </form>
   );
@@ -489,6 +624,7 @@ export default function EntityForm<K extends keyof EntityMap>({
   loading = false,
 
   products,
+  countries,
 }: EntityFormProps<K>) {
   if (entity === "products") {
     return (
@@ -518,6 +654,17 @@ export default function EntityForm<K extends keyof EntityMap>({
         onSubmit={onSubmit as (v: CountriesOutput) => Promise<void>}
         onCancel={onCancel}
         loading={loading}
+      />
+    );
+  }
+  if (entity === "cities") {
+    return (
+      <CitiesForm
+        initial={initial as Partial<CitiesFormValues>}
+        onSubmit={onSubmit as (v: CitiesOutput) => Promise<void>}
+        onCancel={onCancel}
+        loading={loading}
+        countries={countries}
       />
     );
   }

@@ -12,6 +12,7 @@ export const entityRoutes = {
   codeBatches: "/dashboard/code-batches",
   verifications: "/dashboard/verifications",
   countries: "/dashboard/countries",
+  cities: "/dashboard/cities",
 } as const;
 
 export type EntityRouteKey = keyof typeof entityRoutes;

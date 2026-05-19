@@ -34,6 +34,7 @@ const ENTITY_LABEL: Record<EntityKey, string> = {
   codeBatches: "nav.codeBatches",
   verifications: "nav.verifications",
   countries: "nav.countries",
+  cities: "nav.cities",
 };
 
 // ---------------------------------------------------------------------------
@@ -91,8 +92,9 @@ export default function EntityPage({
   );
 
   // Products list for codeBatch form dropdown — only fetched when needed
-  const productsQuery = useProductList<Product>("products", { per_page: 200 });
-
+  const productsQuery = useProductList<Product>("products", { per_page: 400 });
+  const countriesQuery = useEntityList<any>("countries", { per_page: 400 });
+  console.log("countriesQuery", countriesQuery?.data);
   // ---------------------------------------------------------------------------
   // Handlers
   // ---------------------------------------------------------------------------
@@ -274,6 +276,13 @@ export default function EntityPage({
         actionColumn,
       ];
     }
+    if (entity === "cities") {
+      return [
+        { header: t("form.cityName"), accessorKey: "name" },
+        { header: t("form.countryName"), accessorKey: "country.name" },
+        actionColumn,
+      ];
+    }
     // SEO fallback
     return [
       { header: t("settings.key"), accessorKey: "key" },
@@ -371,7 +380,10 @@ export default function EntityPage({
             </div>
           ) : (
             // Only render for entities that have forms
-            (entity === "products" || entity === "codeBatches") && (
+            (entity === "products" ||
+              entity === "codeBatches" ||
+              entity === "countries" ||
+              entity === "cities") && (
               <EntityForm
                 entity={entity}
                 initial={formInitial as never}
@@ -382,6 +394,9 @@ export default function EntityPage({
                   entity === "codeBatches"
                     ? productsQuery.data?.items
                     : undefined
+                }
+                countries={
+                  entity === "cities" ? countriesQuery.data?.items : undefined
                 }
               />
             )

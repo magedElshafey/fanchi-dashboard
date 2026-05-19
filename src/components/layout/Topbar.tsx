@@ -68,6 +68,11 @@ export default function Topbar({
         labelKey: "nav.countries",
         icon: <span className="h-2 w-2 rounded-full bg-[var(--primary2)]" />,
       },
+      {
+        to: "/cities",
+        labelKey: "nav.cities",
+        icon: <span className="h-2 w-2 rounded-full bg-[var(--primary2)]" />,
+      },
     ],
     [],
   );
