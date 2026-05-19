@@ -15,7 +15,8 @@ function entityRoute(
     | "codeBatches"
     | "verifications"
     | "countries"
-    | "cities",
+    | "cities"
+    | "roles",
   hasEdit: boolean,
 ): RouteObject {
   return {
@@ -46,5 +47,6 @@ export const websiteRoutes: RouteObject = {
     entityRoute("verifications", "verifications", false),
     entityRoute("countries", "countries", true),
     entityRoute("cities", "cities", true),
+    // entityRoute("roles", "roles", false),
   ],
 };

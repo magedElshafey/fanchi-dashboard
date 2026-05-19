@@ -13,6 +13,7 @@ export const entityRoutes = {
   verifications: "/dashboard/verifications",
   countries: "/dashboard/countries",
   cities: "/dashboard/cities",
+  roles: "/dashboard/roles",
 } as const;
 
 export type EntityRouteKey = keyof typeof entityRoutes;

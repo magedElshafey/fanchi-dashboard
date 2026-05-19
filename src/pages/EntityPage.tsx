@@ -35,6 +35,7 @@ const ENTITY_LABEL: Record<EntityKey, string> = {
   verifications: "nav.verifications",
   countries: "nav.countries",
   cities: "nav.cities",
+  roles: "nav.roles",
 };
 
 // ---------------------------------------------------------------------------
@@ -280,6 +281,12 @@ export default function EntityPage({
       return [
         { header: t("form.cityName"), accessorKey: "name" },
         { header: t("form.countryName"), accessorKey: "country.name" },
+        actionColumn,
+      ];
+    }
+    if (entity === "roles") {
+      return [
+        { header: t("form.roleName"), accessorKey: "name" },
         actionColumn,
       ];
     }

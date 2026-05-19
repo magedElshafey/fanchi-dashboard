@@ -73,6 +73,11 @@ export default function Topbar({
         labelKey: "nav.cities",
         icon: <span className="h-2 w-2 rounded-full bg-[var(--primary2)]" />,
       },
+      {
+        to: "/roles",
+        labelKey: "nav.roles",
+        icon: <span className="h-2 w-2 rounded-full bg-[var(--primary2)]" />,
+      },
     ],
     [],
   );
